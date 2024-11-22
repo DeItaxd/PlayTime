@@ -24,6 +24,7 @@ polygon = PackedVector2Array(-737, 206, 1183, 206, 1183, 35, 119, 94, -742, 94)
 [node name="Walls" type="Node2D" parent="Level"]
 
 [node name="Wall1" type="StaticBody2D" parent="Level/Walls"]
+position = Vector2(125, 0)
 
 [node name="Polygon2D" type="Polygon2D" parent="Level/Walls/Wall1"]
 texture = ExtResource("2_y80jy")
@@ -36,6 +37,9 @@ polygon = PackedVector2Array(-456, 530, -494, -48, -325, -64, -325, 527, -325, 5
 
 [node name="Player" parent="Entities" instance=ExtResource("2_41xbq")]
 position = Vector2(598, 320)
-
-[node name="Camera2D" type="Camera2D" parent="Entities/Player"]
-position_smoothing_enabled = true
+speed = 500
+gravity = 30
+jump_force = -800.0
+wall_jump_pushback = 2000
+wall_slide_gravity = 10
+dash_speed = 1500
