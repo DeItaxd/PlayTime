@@ -6,7 +6,12 @@ extends CharacterBody2D
 @export var wall_jump_pushback = 2000
 @export var wall_slide_gravity = 10
 @export var dash_speed = 1500
-@export var melee_lunge = 600
+@export var melee_lunge = 900
+@export var attacking = false
+@export var max_air_attacks = 3
+var air_attack_count = 0
+var attack_locked = false
+var can_attack = true
 var is_wall_sliding = false
 var dashing = false
 var can_dash = true
@@ -19,6 +24,12 @@ func _physics_process(delta):
 			velocity.y = 1000
 	else:
 		dash_locked = false
+		attack_locked = false
+		air_attack_count = 0
+	
+	if is_on_wall():
+		attack_locked = false
+		air_attack_count = 0
 	
 	var input_vector = Vector2.ZERO
 	input_vector.x = Input.get_action_strength("right") - Input.get_action_strength("left")
@@ -27,7 +38,7 @@ func _physics_process(delta):
 	var horizontal_direction = Input.get_axis("left", "right")
 	if dashing:
 		velocity = dash_speed * input_vector
-	else:
+	elif !attacking:
 		velocity.x = speed * horizontal_direction
 	
 	jump()
@@ -87,11 +98,26 @@ func wall_slide(delta):
 			velocity.y = min(velocity.y, wall_slide_gravity)
 
 func melee():
-	if Input.is_action_just_pressed("hit"):
+	if Input.is_action_just_pressed("hit") and !attack_locked and can_attack:
 		$MeleeAnim.play("Hit")
+		can_attack = false
+		$MeleeCD.start()
+		
+		if !is_on_floor():
+			air_attack_count += 1
+			if air_attack_count >= max_air_attacks:
+				attack_locked = true
+		
+		var mouse_position = get_global_mouse_position()
+		var direction = (mouse_position - global_position).normalized()
+		
+		velocity = direction * melee_lunge
 
 func _on_dash_timer_timeout():
 	dashing = false
 
 func _on_dash_cd_timeout():
 	can_dash = true
+
+func _on_melee_cd_timeout() -> void:
+	can_attack = true
