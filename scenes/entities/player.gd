@@ -10,14 +10,11 @@ func _physics_process(_delta):
 		if velocity.y > 1000:
 			velocity.y = 1000
 	
-	if Input.is_action_just_pressed("jump"):
-		if is_on_floor():
-			velocity.y = -jump_force
-	
 	var horizontal_direction = Input.get_axis("left", "right")
 	
 	velocity.x = speed * horizontal_direction
 	
+	jump()
 	move_and_slide()
 	
 	if is_on_floor():
@@ -25,3 +22,8 @@ func _physics_process(_delta):
 		$Sprite2D.rotation = floor_normal.angle()
 	else:
 		$Sprite2D.rotation = 0 
+
+func jump():
+	if Input.is_action_just_pressed("jump"):
+		if is_on_floor():
+			velocity.y = -jump_force
