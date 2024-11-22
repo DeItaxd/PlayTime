@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://c3dvnchay5ce7"]
+
+[ext_resource type="Texture2D" uid="uid://ccp5wl3wnoc2d" path="res://assets/textures/floor.png" id="1_gtwx4"]
+[ext_resource type="PackedScene" uid="uid://ffwfsirw3rn4" path="res://scenes/entities/player.tscn" id="2_41xbq"]
+[ext_resource type="Texture2D" uid="uid://bcnjbwmq2be6d" path="res://assets/textures/wall.png" id="2_y80jy"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Level" type="Node2D" parent="."]
+
+[node name="Floor" type="Node2D" parent="Level"]
+
+[node name="Floor1" type="StaticBody2D" parent="Level/Floor"]
+
+[node name="Polygon2D" type="Polygon2D" parent="Level/Floor/Floor1"]
+position = Vector2(262, 427)
+texture = ExtResource("1_gtwx4")
+polygon = PackedVector2Array(-737, 206, 1183, 206, 1183, 35, 119, 93, -742, 93)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Floor/Floor1"]
+position = Vector2(262, 427)
+polygon = PackedVector2Array(-737, 206, 1183, 206, 1183, 35, 119, 94, -742, 94)
+
+[node name="Walls" type="Node2D" parent="Level"]
+
+[node name="Wall1" type="StaticBody2D" parent="Level/Walls"]
+
+[node name="Polygon2D" type="Polygon2D" parent="Level/Walls/Wall1"]
+texture = ExtResource("2_y80jy")
+polygon = PackedVector2Array(-456, 530, -494, -48, -325, -64, -325, 526)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Walls/Wall1"]
+polygon = PackedVector2Array(-456, 530, -494, -48, -325, -64, -325, 527, -325, 527)
+
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="Player" parent="Entities" instance=ExtResource("2_41xbq")]
+position = Vector2(598, 320)
+
+[node name="Camera2D" type="Camera2D" parent="Entities/Player"]
+position_smoothing_enabled = true
