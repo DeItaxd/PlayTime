@@ -16,6 +16,8 @@ var is_wall_sliding = false
 var dashing = false
 var can_dash = true
 var dash_locked = false
+var in_future = false
+var can_timeswitch = true
 
 func _physics_process(delta):
 	if !is_on_floor():
@@ -113,11 +115,25 @@ func melee():
 		
 		velocity = direction * melee_lunge
 
+func timeswitch():
+	if Input.is_action_just_pressed("timeswitch") and can_timeswitch:
+		if !in_future:
+			can_timeswitch = false
+			Signals.forward.emit()
+			$Timeswitch.start()
+
 func _on_dash_timer_timeout():
 	dashing = false
 
 func _on_dash_cd_timeout():
 	can_dash = true
 
-func _on_melee_cd_timeout() -> void:
+func _on_melee_cd_timeout():
 	can_attack = true
+
+func _on_timeswitch_timeout():
+	$TimeswitchCD.start()
+	Signals.backward.emit()
+
+func _on_timeswitch_cd_timeout():
+	can_timeswitch = true
