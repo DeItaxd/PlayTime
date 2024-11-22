@@ -6,6 +6,7 @@ extends CharacterBody2D
 @export var wall_jump_pushback = 2000
 @export var wall_slide_gravity = 10
 @export var dash_speed = 1500
+@export var melee_lunge = 600
 var is_wall_sliding = false
 var dashing = false
 var can_dash = true
@@ -34,15 +35,16 @@ func _physics_process(delta):
 	dash()
 	move_and_slide()
 	wall_slide(delta)
+	melee()
 	
 	if is_on_floor():
 		var floor_normal: Vector2 = get_floor_normal()
-		$Sprite2D.rotation = floor_normal.angle()
+		$Texture.rotation = floor_normal.angle()
 	elif is_on_wall():
 		var wall_normal: Vector2 = get_wall_normal()
-		$Sprite2D.rotation = wall_normal.angle()
+		$Texture.rotation = wall_normal.angle()
 	else:
-		$Sprite2D.rotation = 0 
+		$Texture.rotation = 0 
 		
 
 func jump():
@@ -83,6 +85,10 @@ func wall_slide(delta):
 		if is_wall_sliding:
 			velocity.y += (wall_slide_gravity * delta)
 			velocity.y = min(velocity.y, wall_slide_gravity)
+
+func melee():
+	if Input.is_action_just_pressed("hit"):
+		$MeleeAnim.play("Hit")
 
 func _on_dash_timer_timeout():
 	dashing = false
