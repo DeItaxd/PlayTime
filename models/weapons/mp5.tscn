@@ -469,11 +469,11 @@ tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
+"end_offset": 0.6536,
+"start_offset": 0.1728,
 "stream": ExtResource("2_6rm6j")
 }],
-"times": PackedFloat32Array(-0.17)
+"times": PackedFloat32Array(0)
 }
 tracks/1/use_blend = true
 
