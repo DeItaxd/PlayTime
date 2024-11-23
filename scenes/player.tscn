@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://d0bbllal0am4n"]
+[gd_scene load_steps=34 format=3 uid="uid://d0bbllal0am4n"]
 
 [ext_resource type="Shader" path="res://shaders/outline.gdshader" id="1_66tcc"]
 [ext_resource type="Shader" path="res://shaders/outline_real.gdshader" id="2_uy43f"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://g0l2m41tjiug" path="res://models/weapons/mp5.tscn" id="3_wewjs"]
 [ext_resource type="AudioStream" uid="uid://h1hp5t71ksqn" path="res://sounds/mp5-reload.mp3" id="4_8drp7"]
 [ext_resource type="AudioStream" uid="uid://cnhcntbpl5bun" path="res://sounds/9mm Pistol Dry Fire.mp3" id="5_abqcc"]
+[ext_resource type="AudioStream" uid="uid://u0dk0vr0813t" path="res://sounds/light_switch.mp3" id="5_ulfj6"]
 [ext_resource type="Script" path="res://scenes/FootstepManager.gd" id="8_toltb"]
 [ext_resource type="AudioStream" uid="uid://cwfu1mh4vxx8o" path="res://sounds/Footstep.mp3" id="9_gx2bq"]
 
@@ -31,6 +32,8 @@ const BASE_FOV = 75.0
 const FOV_CHANGE = 1.5
 
 #gun variables
+var has_gun = false
+var has_light = true
 var aiming = false
 var weapon_sway_amount = 5.0
 var weapon_rotation_sway = -0.2
@@ -46,7 +49,7 @@ var allowed_to_sway = true
 var current_ammo = 30
 
 #blink variables
-var in_void = false
+var in_future = false
 
 #footstep variables
 var can_play : bool = true
@@ -58,6 +61,10 @@ var gravity = 9.8
 var bullet = load(\"res://models/weapons/Bullet.tscn\")
 var instance
 
+var can_timeshift = true
+var tut1 = false
+var tut2 = false
+
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var gun_anim = $Head/Camera3D/mp5/AnimationPlayer
@@ -67,8 +74,8 @@ var instance
 @onready var crosshair = $CanvasLayer/Crosshair
 @onready var guncamera = $CanvasLayer/SubViewportContainer/SubViewport/GunCamera
 @onready var gun = $Head/Camera3D/mp5
-@onready var dark_outline = $Head/Camera3D/DarkOutline
-@onready var dark_outline_real = $CanvasLayer/SubViewportContainer/SubViewport/GunCamera/DarkOutline
+@onready var vhs_outline = $Head/Camera3D/VHSOutline
+@onready var vhs_outline_real = $CanvasLayer/SubViewportContainer/SubViewport/GunCamera/VHSOutline
 @onready var blink_anim = $Blinkanim
 @onready var gun_light = $Head/Camera3D/mp5/SpotLight3D
 @onready var gun_light_anim = $Head/Camera3D/mp5/Lightanim
@@ -128,6 +135,11 @@ func _physics_process(delta):
 	var velocity_clamped = clamp(velocity.length(), 0.5, SPRINT_SPEED * 2)
 	var target_fov = BASE_FOV + FOV_CHANGE * velocity_clamped
 	camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
+	
+	if has_gun:
+		gun.visible = true
+	else:
+		gun.visible = false
 	
 	#Shooting
 	if gun.visible:
@@ -258,26 +270,47 @@ func reload():
 				current_ammo = 30
 
 func blink():
-	if in_void == false:
+	if !in_future and can_timeshift:
+		if !tut1:
+			$Head/Camera3D/TutorialText.queue_free()
+			tut1 = true
+		if !tut2:
+			$Head/Camera3D/TutorialText2.visible = true
 		blink_anim.play(\"Blink\")
-		dark_outline.visible = true
-		dark_outline_real.visible = true
-		Signals.emit_signal(\"voided\")
-		in_void = true
+		vhs_outline.visible = true
+		vhs_outline_real.visible = true
+		Signals.emit_signal(\"timeshift\")
+		in_future = true
 		blink_anim.play(\"Unblink\")
-	else:
-		blink_anim.play(\"Blink\")
-		dark_outline.visible = false
-		dark_outline_real.visible = false
-		Signals.emit_signal(\"voided\")
-		in_void = false
-		blink_anim.play(\"Unblink\")
+		can_timeshift = false
+		$Timeshift.start()
 
 func light():
-	if !gun_light.visible:
-		gun_light_anim.play(\"Light\")
+	if has_light:
+		if !$Head/Camera3D/Light/SpotLight3D.visible:
+			$Head/Camera3D/Light/Lightanim.play(\"Light\")
+		else:
+			$Head/Camera3D/Light/Lightanim.play(\"Unlight\")
 	else:
-		gun_light_anim.play(\"Unlight\")
+		if !gun_light.visible:
+			gun_light_anim.play(\"Light\")
+		else:
+			gun_light_anim.play(\"Unlight\")
+
+func _on_timeshift_timeout():
+	blink_anim.play(\"Blink\")
+	vhs_outline.visible = false
+	vhs_outline_real.visible = false
+	Signals.emit_signal(\"timeshift\")
+	in_future = false
+	blink_anim.play(\"Unblink\")
+	if !tut2:
+		$Head/Camera3D/TutorialText2.queue_free()
+		tut2 = true
+	$TimeshiftCD.start()
+
+func _on_timeshift_cd_timeout():
+	can_timeshift = true
 "
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yr7rn"]
@@ -319,6 +352,76 @@ shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 material = SubResource("ShaderMaterial_j00rk")
 flip_faces = true
 size = Vector2(2, 2)
+
+[sub_resource type="Animation" id="Animation_xj8aj"]
+resource_name = "Light"
+length = 0.05
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpotLight3D:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Light")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 0.6536,
+"start_offset": 0.1728,
+"stream": ExtResource("5_ulfj6")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/1/use_blend = true
+
+[sub_resource type="Animation" id="Animation_vqxum"]
+resource_name = "Unlight"
+length = 0.05
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpotLight3D:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Light")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_ulfj6")
+}],
+"times": PackedFloat32Array(-0.17)
+}
+tracks/1/use_blend = true
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_g1yiu"]
+_data = {
+"Light": SubResource("Animation_xj8aj"),
+"Unlight": SubResource("Animation_vqxum")
+}
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wc6dd"]
 albedo_color = Color(0, 0, 0, 1)
@@ -664,7 +767,7 @@ render_target_update_mode = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185817, 0)
 cull_mask = 4
 
-[node name="DarkOutline" type="ColorRect" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
+[node name="VHSOutline" type="ColorRect" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
 visible = false
 material = SubResource("ShaderMaterial_yr7rn")
 anchors_preset = 15
@@ -673,7 +776,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
+[node name="PixelOutline" type="MeshInstance3D" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
 layers = 4
 mesh = SubResource("QuadMesh_wcv41")
 
@@ -686,7 +789,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18578, 0)
 [node name="Camera3D" type="Camera3D" parent="Head"]
 cull_mask = 983035
 
-[node name="DarkOutline" type="ColorRect" parent="Head/Camera3D"]
+[node name="VHSOutline" type="ColorRect" parent="Head/Camera3D"]
 visible = false
 material = SubResource("ShaderMaterial_yr7rn")
 anchors_preset = 15
@@ -696,7 +799,23 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PixelOutline" type="MeshInstance3D" parent="Head/Camera3D"]
+visible = false
 mesh = SubResource("QuadMesh_6xy0j")
+
+[node name="Light" type="Node3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.204771, -0.164592, -0.26738)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Head/Camera3D/Light"]
+visible = false
+spot_range = 8.117
+spot_angle = 29.5254
+
+[node name="Light" type="AudioStreamPlayer3D" parent="Head/Camera3D/Light"]
+
+[node name="Lightanim" type="AnimationPlayer" parent="Head/Camera3D/Light"]
+libraries = {
+"": SubResource("AnimationLibrary_g1yiu")
+}
 
 [node name="mp5" parent="Head/Camera3D" instance=ExtResource("3_wewjs")]
 transform = Transform3D(0.99863, 0.00118737, 0.0523225, 0, 0.999743, -0.0226873, -0.052336, 0.0226563, 0.998372, 0.22, -0.15, -0.883)
@@ -717,6 +836,34 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.
 visible = false
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_v6y8k")
+
+[node name="TutorialText" type="RichTextLabel" parent="Head/Camera3D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -121.0
+offset_right = 121.0
+offset_bottom = 31.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/normal_font_size = 15
+text = "Press Q to jump forwards in time"
+
+[node name="TutorialText2" type="RichTextLabel" parent="Head/Camera3D"]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -171.0
+offset_top = -31.0
+offset_right = 171.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+theme_override_font_sizes/normal_font_size = 10
+text = "Switching between the future and the present lets you avoid obstacles"
 
 [node name="Aimanim" type="AnimationPlayer" parent="."]
 libraries = {
@@ -740,3 +887,12 @@ ground_pos = NodePath("../GroundPosition")
 
 [node name="GroundPosition" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
+
+[node name="Timeshift" type="Timer" parent="."]
+wait_time = 7.0
+
+[node name="TimeshiftCD" type="Timer" parent="."]
+wait_time = 2.0
+
+[connection signal="timeout" from="Timeshift" to="." method="_on_timeshift_timeout"]
+[connection signal="timeout" from="TimeshiftCD" to="." method="_on_timeshift_cd_timeout"]

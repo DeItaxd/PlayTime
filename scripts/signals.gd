@@ -1,3 +1,3 @@
 extends Node
 
-signal voided
+signal timeshift

@@ -4,13 +4,13 @@ extends MeshInstance3D
 
 func _ready():
 	Signals.connect("timeshift", timeshift)
-	visible = true
-	collision.disabled = false
+	visible = false
+	collision.disabled = true
 
 func timeshift():
-	if visible:
-		visible = false
-		collision.disabled = true
-	else:
+	if !visible:
 		visible = true
 		collision.disabled = false
+	else:
+		visible = false
+		collision.disabled = true
