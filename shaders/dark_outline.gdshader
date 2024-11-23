@@ -1,39 +1,64 @@
-shader_type spatial;
-render_mode unshaded, blend_mix;
+// adapted from:
+// https://www.shadertoy.com/view/Ms3XWH
 
-uniform sampler2D screen_texture : source_color, hint_screen_texture, filter_nearest;
-uniform sampler2D depth_texture : source_color, hint_depth_texture, filter_nearest;
+shader_type canvas_item;
+uniform float shake: hint_range(0, 10) = 0.015;
+uniform float noiseQuality: hint_range(0.1, 250,0.1) = 250;
+uniform float noiseIntensity: hint_range(0, 0.05,0.001) = 0.001;
+uniform float offsetIntensity: hint_range(0, 0.05,0.0001) = 0.05;
+uniform float colorOffsetIntensity: hint_range(0.1, 1.5,0.001) = 0.5;
+uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
 
-float get_depth(vec2 screen_uv, mat4 inv_projection_matrix) {
-    float depth = texture(depth_texture, screen_uv).r;
-    vec3 ndc = vec3(screen_uv * 2.0 - 1.0, depth);
-    vec4 view = inv_projection_matrix * vec4(ndc, 1.0);
-    view.xyz /= view.w;
-    return -view.z;
+float rand(vec2 co)
+{
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
-void vertex() {
-    POSITION = vec4(VERTEX.xy, 1.0, 1.0);
+float verticalBar(float pos, float uvY, float offset)
+{
+    float edge0 = (pos - shake);
+    float edge1 = (pos + shake);
+
+    float x = smoothstep(edge0, pos, uvY) * offset;
+    x -= smoothstep(pos, edge1, uvY) * offset;
+    return x;
 }
+
 
 void fragment() {
-    float depth = get_depth(SCREEN_UV, INV_PROJECTION_MATRIX);
-    vec2 texel_size = 1.0 / VIEWPORT_SIZE.xy;
-    
-    vec2 uvs[4];
-    uvs[0] = vec2(SCREEN_UV.x, SCREEN_UV.y + texel_size.y);
-    uvs[1] = vec2(SCREEN_UV.x, SCREEN_UV.y - texel_size.y);
-    uvs[2] = vec2(SCREEN_UV.x + texel_size.x, SCREEN_UV.y);
-    uvs[3] = vec2(SCREEN_UV.x - texel_size.x, SCREEN_UV.y);
-    
-    float depth_diff = 0.0;
-    for (int i = 0; i < 4; i++) {
-        float d = get_depth(uvs[i], INV_PROJECTION_MATRIX);
-        depth_diff += depth - d;
+    vec2 iResolution = 1.0 / SCREEN_PIXEL_SIZE;
+    vec2 uv = FRAGCOORD.xy / iResolution.xy;
+
+    // VHS distortion
+    for (float i = 0.0; i < 0.71; i += 0.1313)
+    {
+        float d = mod(TIME * i, 1.7);
+        float o = sin(1.0 - tan(TIME * 0.24 * i));
+        o *= offsetIntensity;
+        uv.x += verticalBar(d, uv.y, o);
     }
-    
-    vec4 original = texture(screen_texture, SCREEN_UV);
-    
-    ALBEDO = vec3(depth_diff);
-    ALPHA = original.a; // Preserve the original alpha value
+    float uvY = uv.y;
+    uvY *= noiseQuality;
+    uvY = float(int(uvY)) * (1.0 / noiseQuality);
+    float noise = rand(vec2(TIME * 0.00001, uvY));
+    uv.x += noise * noiseIntensity;
+
+    // RGB color offsets
+    vec2 offsetR = vec2(0.006 * sin(TIME), 0.0) * colorOffsetIntensity;
+    vec2 offsetG = vec2(0.0073 * (cos(TIME * 0.97)), 0.0) * colorOffsetIntensity;
+
+    float r = texture(screen_texture, uv + offsetR).r;
+    float g = texture(screen_texture, uv + offsetG).g;
+    float b = texture(screen_texture, uv).b;
+
+    vec4 tex = vec4(r, g, b, 1.0);
+
+    // Make the background transparent
+    if (tex.rgb == vec3(0.0)) {
+        tex.a = 0.0; // Fully transparent if no color data
+    } else {
+        tex.a = 1.0; // Fully opaque for color data
+    }
+
+    COLOR = tex;
 }
