@@ -331,6 +331,9 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.15
 [node name="Wall_Mines_A64" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
 transform = Transform3D(1, 0, 0.000942469, 0, 1, 0, -0.000942469, 0, 1, -28.549, -9.06809, 21.9311)
 
+[node name="Wall_Mines_A75" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(1, 0, 0.000942469, 0, 1, 0, -0.000942469, 0, 1, -28.549, -5.4571, 21.9311)
+
 [node name="Wall_Mines_A65" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
 transform = Transform3D(1, 0, 0.000942469, 0, 1, 0, -0.000942469, 0, 1, -32.7335, -5.58475, 22.0443)
 
