@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cnhcntbpl5bun"
+path="res://.godot/imported/9mm Pistol Dry Fire.mp3-3b5309e96cff8f3a2e69fccc828c1f1e.mp3str"
+
+[deps]
+
+source_file="res://sounds/9mm Pistol Dry Fire.mp3"
+dest_files=["res://.godot/imported/9mm Pistol Dry Fire.mp3-3b5309e96cff8f3a2e69fccc828c1f1e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
