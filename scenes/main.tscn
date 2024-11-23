@@ -1,0 +1,367 @@
+[gd_scene load_steps=15 format=3 uid="uid://db78l0b53215y"]
+
+[ext_resource type="Texture2D" uid="uid://c4ar7w2hux7pu" path="res://images/PurplyBlueSky.png" id="1_ytf6a"]
+[ext_resource type="Script" path="res://models/world/terrain/light_platform.gd" id="2_vp1po"]
+[ext_resource type="Script" path="res://models/world/terrain/light_object.gd" id="3_1knct"]
+[ext_resource type="Script" path="res://models/world/terrain/light_platform_invisible.gd" id="3_4vgal"]
+[ext_resource type="PackedScene" uid="uid://d0bbllal0am4n" path="res://scenes/player.tscn" id="3_xgt5b"]
+[ext_resource type="PackedScene" uid="uid://c7bdvmfyubr7h" path="res://models/world/objects/LightBox.tscn" id="4_45jva"]
+[ext_resource type="PackedScene" uid="uid://d3s2blgdrk1w8" path="res://models/world/objects/LightVine.tscn" id="4_kuq52"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_pyglq"]
+panorama = ExtResource("1_ytf6a")
+
+[sub_resource type="Sky" id="Sky_l3gwo"]
+sky_material = SubResource("PanoramaSkyMaterial_pyglq")
+
+[sub_resource type="Environment" id="Environment_oknjo"]
+background_mode = 2
+sky = SubResource("Sky_l3gwo")
+ambient_light_source = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0abr4"]
+albedo_color = Color(0.588235, 0.588235, 0.588235, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ah3x"]
+shading_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ocpq2"]
+shading_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_21sg7"]
+shading_mode = 0
+
+[node name="Main" type="Node3D"]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 5
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(384, 216)
+render_target_update_mode = 4
+
+[node name="Level" type="Node3D" parent="SubViewportContainer/SubViewport"]
+
+[node name="Environment" type="Node3D" parent="SubViewportContainer/SubViewport/Level"]
+
+[node name="SkyboxNormal" type="WorldEnvironment" parent="SubViewportContainer/SubViewport/Level/Environment"]
+environment = SubResource("Environment_oknjo")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/Level/Environment"]
+transform = Transform3D(0.597031, 0.693664, 0.402968, -0.693664, 0.194063, 0.693664, 0.402968, -0.693664, 0.597031, 0, 5.62382, 0)
+shadow_enabled = true
+
+[node name="World" type="Node3D" parent="SubViewportContainer/SubViewport/Level"]
+
+[node name="Terrain" type="Node3D" parent="SubViewportContainer/SubViewport/Level/World"]
+
+[node name="Floor" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0369949, 0, -0.176895)
+use_collision = true
+size = Vector3(5.05791, 0.160156, 4.79868)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Ceiling" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.037, 1.314, -0.177)
+use_collision = true
+size = Vector3(5.05791, 0.160156, 4.79868)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Floor2" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00870442, 0, -7.13594)
+use_collision = true
+size = Vector3(1.75499, 0.160156, 9.16961)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.917001, 0.652636, -4.37869)
+use_collision = true
+size = Vector3(1.40005, 0.160156, 3.65512)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall14" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.949718, 0.652636, -9.75492)
+use_collision = true
+size = Vector3(1.40005, 0.160156, 3.94621)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall15" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.967605, 0.652636, -9.74924)
+use_collision = true
+size = Vector3(1.40005, 0.160156, 3.94621)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall9" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -2.50929, 0.652636, -0.180208)
+use_collision = true
+size = Vector3(1.40005, 0.160156, 4.8995)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall10" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 2.56982, 0.652636, -0.180208)
+use_collision = true
+size = Vector3(1.40005, 0.160156, 4.8995)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall11" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0.052006, 0.652636, 2.27829)
+use_collision = true
+size = Vector3(1.40005, 0.160156, 5.03166)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall12" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, -1.69297, 0.652636, -2.63129)
+use_collision = true
+size = Vector3(1.40005, 0.160156, 1.54171)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall13" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 1.73697, 0.652636, -2.63318)
+use_collision = true
+size = Vector3(1.40005, 0.160156, 1.59263)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall8" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.887842, 0.652636, -4.37869)
+use_collision = true
+size = Vector3(1.40005, 0.160156, 3.65512)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Ceiling3" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.009, 1.314, -7.136)
+use_collision = true
+size = Vector3(1.75499, 0.160156, 9.16961)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Floor5" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0440702, 0.000296988, -6.9531)
+use_collision = true
+size = Vector3(5.03, 0.16, 1.308)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Ceiling2" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0440702, 1.31412, -6.95819)
+use_collision = true
+size = Vector3(5.03, 0.16, 1.38323)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall3" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 2.64628, 0.599628, -6.96271)
+use_collision = true
+size = Vector3(1.28558, 0.16, 1.38249)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall2" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.73294, 0.599628, -6.20217)
+use_collision = true
+size = Vector3(1.7025, 0.16, 1.38249)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall7" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.71706, 0.599628, -6.20217)
+use_collision = true
+size = Vector3(1.7025, 0.16, 1.38249)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall4" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.73294, 0.599628, -7.71874)
+use_collision = true
+size = Vector3(1.7025, 0.16, 1.38249)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall5" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.71706, 0.599628, -7.71874)
+use_collision = true
+size = Vector3(1.7025, 0.16, 1.38249)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Wall6" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -2.54115, 0.599628, -6.96124)
+use_collision = true
+size = Vector3(1.28558, 0.16, 1.37956)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Floor3" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0337868, 0, -23.2191)
+use_collision = true
+size = Vector3(19.5101, 0.160156, 23.058)
+material = SubResource("StandardMaterial3D_0abr4")
+
+[node name="Void" type="Node3D" parent="SubViewportContainer/SubViewport/Level/World"]
+
+[node name="Light" type="Node3D" parent="SubViewportContainer/SubViewport/Level/World"]
+
+[node name="Wall" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -0.892056, 0.643545, -6.95337)
+flip_faces = true
+size = Vector3(1.31433, 0.0491392, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="WallInvisible" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -0.892056, 0.643545, -6.95337)
+visible = false
+flip_faces = true
+size = Vector3(1.31433, 0.0491392, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("3_4vgal")
+
+[node name="Wall2" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0.913123, 0.643545, -6.95337)
+flip_faces = true
+size = Vector3(1.31433, 0.0491392, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="Wall2Invisible" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0.913123, 0.643545, -6.95337)
+visible = false
+flip_faces = true
+size = Vector3(1.31433, 0.0491392, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("3_4vgal")
+
+[node name="Vine" parent="SubViewportContainer/SubViewport/Level/World/Light" instance=ExtResource("4_kuq52")]
+transform = Transform3D(0.480232, 0.156213, 0, -0.156213, 0.480232, 0, 0, 0, 0.505, -0.730013, 0.491575, -7.50244)
+script = ExtResource("3_1knct")
+
+[node name="Vine2" parent="SubViewportContainer/SubViewport/Level/World/Light" instance=ExtResource("4_kuq52")]
+transform = Transform3D(0.46524, -0.19641, 0, 0.19641, 0.46524, 0, 0, 0, 0.505, -0.178942, -0.035696, -7.50244)
+script = ExtResource("3_1knct")
+
+[node name="Vine3" parent="SubViewportContainer/SubViewport/Level/World/Light" instance=ExtResource("4_kuq52")]
+transform = Transform3D(0.17867, -0.472337, 0, 0.472337, 0.17867, 0, 0, 0, 0.505, -0.178942, -0.035696, -7.50244)
+script = ExtResource("3_1knct")
+
+[node name="Vine4" parent="SubViewportContainer/SubViewport/Level/World/Light" instance=ExtResource("4_kuq52")]
+transform = Transform3D(0.210743, -0.0921281, 0, 0.0921281, 0.210743, 0, 0, 0, 0.23, -0.543957, 0.439359, -7.50244)
+script = ExtResource("3_1knct")
+
+[node name="Vine5" parent="SubViewportContainer/SubViewport/Level/World/Light" instance=ExtResource("4_kuq52")]
+transform = Transform3D(0.0415549, 0.226215, 0, -0.226215, 0.0415549, 0, 0, 0, 0.23, 0.579459, 0.411503, -7.50869)
+script = ExtResource("3_1knct")
+
+[node name="Design" type="Node3D" parent="SubViewportContainer/SubViewport/Level/World/Light"]
+
+[node name="DesignFloor" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light/Design"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.041069, 0.0824716, -6.95505)
+flip_faces = true
+size = Vector3(5.02065, 0.001, 1.30811)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="DesignCeiling" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light/Design"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.041069, 1.2196, -6.95505)
+size = Vector3(5.02065, 0.001, 1.30811)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="DesignWall" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light/Design"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.67004, 0.643545, -7.60883)
+flip_faces = true
+size = Vector3(1.59842, 0.001, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="DesignWall2" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light/Design"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.72137, 0.643545, -7.60883)
+flip_faces = true
+size = Vector3(1.66945, 0.001, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="DesignWall3" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light/Design"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.67004, 0.643545, -6.2983)
+flip_faces = true
+size = Vector3(1.59842, 0.001, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="DesignWall4" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light/Design"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.72137, 0.643545, -6.2983)
+flip_faces = true
+size = Vector3(1.66945, 0.001, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="DesignWall5" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light/Design"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 2.5581, 0.643545, -6.95337)
+flip_faces = true
+size = Vector3(1.31433, 0.001, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="DesignWall6" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Light/Design"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, -2.45948, 0.643545, -6.95337)
+flip_faces = true
+size = Vector3(1.31433, 0.001, 1.165)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="Objects" type="Node3D" parent="SubViewportContainer/SubViewport/Level/World"]
+
+[node name="Void" type="Node3D" parent="SubViewportContainer/SubViewport/Level/World/Objects"]
+
+[node name="Light" type="Node3D" parent="SubViewportContainer/SubViewport/Level/World/Objects"]
+
+[node name="Box" parent="SubViewportContainer/SubViewport/Level/World/Objects/Light" instance=ExtResource("4_45jva")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0107296, 0.24106, -6.59642)
+script = ExtResource("3_1knct")
+
+[node name="Box2" parent="SubViewportContainer/SubViewport/Level/World/Objects/Light" instance=ExtResource("4_45jva")]
+transform = Transform3D(0.915255, 0, 0.402875, 0, 1, 0, -0.402875, 0, 0.915255, 0.382003, 0.24106, -6.72874)
+script = ExtResource("3_1knct")
+
+[node name="Box3" parent="SubViewportContainer/SubViewport/Level/World/Objects/Light" instance=ExtResource("4_45jva")]
+transform = Transform3D(1.35361, 0, -0.429105, 0, 1.42, 0, 0.429105, 0, 1.35361, -0.142028, 0.309315, -7.23021)
+script = ExtResource("3_1knct")
+
+[node name="Plank" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Objects/Light"]
+transform = Transform3D(0.935561, 1.54373e-08, 0.353165, 0.353165, -4.08947e-08, -0.935561, -8.39633e-16, 1, -4.37114e-08, -0.536779, 0.262735, -6.67246)
+flip_faces = true
+size = Vector3(1, 0.102051, 0.0290833)
+material = SubResource("StandardMaterial3D_7ah3x")
+script = ExtResource("2_vp1po")
+
+[node name="PlankInvisible" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Objects/Light"]
+transform = Transform3D(0.935561, 1.54373e-08, 0.353165, 0.353165, -4.08947e-08, -0.935561, -8.39633e-16, 1, -4.37114e-08, -0.536779, 0.262735, -6.67246)
+visible = false
+size = Vector3(1, 0.102051, 0.0290833)
+script = ExtResource("3_4vgal")
+
+[node name="Plank2" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Objects/Light"]
+transform = Transform3D(0.886188, 0, -0.463327, 0, 1, 0, 0.463327, 0, 0.886187, -0.259298, 0.0941566, -6.66681)
+flip_faces = true
+size = Vector3(0.0722656, 0.0270386, 0.820503)
+material = SubResource("StandardMaterial3D_ocpq2")
+script = ExtResource("2_vp1po")
+
+[node name="Plank2Invisible" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Objects/Light"]
+transform = Transform3D(0.886188, 0, -0.463327, 0, 1, 0, 0.463327, 0, 0.886187, -0.259298, 0.0941566, -6.66681)
+visible = false
+size = Vector3(0.0722656, 0.0270386, 0.820503)
+script = ExtResource("3_4vgal")
+
+[node name="Plank3" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Objects/Light"]
+transform = Transform3D(0.562787, -0.0848257, -0.822238, 0.0479115, 0.996396, -0.0699992, 0.825212, 0, 0.564823, -0.385793, 0.125504, -6.66681)
+flip_faces = true
+size = Vector3(0.0722656, 0.0270386, 0.820503)
+material = SubResource("StandardMaterial3D_21sg7")
+script = ExtResource("2_vp1po")
+
+[node name="Plank3Invisible" type="CSGBox3D" parent="SubViewportContainer/SubViewport/Level/World/Objects/Light"]
+transform = Transform3D(0.562787, -0.0848257, -0.822238, 0.0479115, 0.996396, -0.0699992, 0.825212, 0, 0.564823, -0.385793, 0.125504, -6.66681)
+visible = false
+size = Vector3(0.0722656, 0.0270386, 0.820503)
+script = ExtResource("3_4vgal")
+
+[node name="Player" parent="SubViewportContainer/SubViewport" instance=ExtResource("3_xgt5b")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0.620592, 0)

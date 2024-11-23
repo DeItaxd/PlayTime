@@ -1,4 +1,3 @@
 extends Node
 
-signal forward
-signal backward
+signal voided
