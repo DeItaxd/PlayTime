@@ -49,6 +49,7 @@ func _physics_process(delta):
 	move_and_slide()
 	wall_slide(delta)
 	melee()
+	timeswitch()
 	
 	if is_on_floor():
 		var floor_normal: Vector2 = get_floor_normal()
@@ -116,11 +117,11 @@ func melee():
 		velocity = direction * melee_lunge
 
 func timeswitch():
-	if Input.is_action_just_pressed("timeswitch") and can_timeswitch:
-		if !in_future:
-			can_timeswitch = false
-			Signals.forward.emit()
-			$Timeswitch.start()
+	if Input.is_action_just_pressed("timeswitch") and can_timeswitch and !in_future:
+		can_timeswitch = false
+		in_future = true
+		Signals.forward.emit()
+		$Timeswitch.start()
 
 func _on_dash_timer_timeout():
 	dashing = false
@@ -133,6 +134,7 @@ func _on_melee_cd_timeout():
 
 func _on_timeswitch_timeout():
 	$TimeswitchCD.start()
+	in_future = false
 	Signals.backward.emit()
 
 func _on_timeswitch_cd_timeout():

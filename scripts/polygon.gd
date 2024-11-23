@@ -1,11 +1,11 @@
 extends StaticBody2D
 
+@onready var polygon2d = $Polygon2D
 @onready var collision = $CollisionPolygon2D
-@onready var collision2 = $CollisionPolygon2D2
 
 func _ready():
+	collision.polygon = polygon2d.polygon
 	collision.disabled = true
-	collision2.disabled = true
 	Signals.connect("forward", forward)
 	Signals.connect("backward", backward)
 	visible = false
@@ -13,9 +13,7 @@ func _ready():
 func forward():
 	visible = true
 	collision.disabled = false
-	collision2.disabled = false
 
 func backward():
 	visible = false
 	collision.disabled = true
-	collision2.disabled = true
