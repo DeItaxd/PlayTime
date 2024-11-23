@@ -1,12 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://c3dvnchay5ce7"]
+[gd_scene load_steps=3 format=3 uid="uid://c3dvnchay5ce7"]
 
 [ext_resource type="Texture2D" uid="uid://ccp5wl3wnoc2d" path="res://assets/textures/floor.png" id="1_gtwx4"]
 [ext_resource type="PackedScene" uid="uid://ffwfsirw3rn4" path="res://scenes/entities/player.tscn" id="2_41xbq"]
-[ext_resource type="Texture2D" uid="uid://bcnjbwmq2be6d" path="res://assets/textures/wall.png" id="2_y80jy"]
-[ext_resource type="Script" path="res://scripts/polygon.gd" id="3_om6jq"]
-[ext_resource type="Texture2D" uid="uid://bsodidbjnkulx" path="res://assets/textures/future.png" id="4_ovpfr"]
-[ext_resource type="Script" path="res://scripts/past_object.gd" id="5_4am0x"]
-[ext_resource type="Texture2D" uid="uid://bvdynj6467gg7" path="res://assets/textures/past.png" id="5_jgfxg"]
 
 [node name="Main" type="Node2D"]
 
@@ -16,92 +11,56 @@
 
 [node name="Floor" type="Node2D" parent="Level/Future"]
 
-[node name="Floor1" type="StaticBody2D" parent="Level/Future/Floor"]
-collision_mask = 11
+[node name="MainRoom" type="StaticBody2D" parent="Level/Future/Floor"]
+position = Vector2(363, 161)
+scale = Vector2(0.5, 0.5)
 
-[node name="Polygon2D" type="Polygon2D" parent="Level/Future/Floor/Floor1"]
-position = Vector2(262, 427)
+[node name="Polygon2D" type="Polygon2D" parent="Level/Future/Floor/MainRoom"]
+position = Vector2(1657, 641)
+rotation = 3.14159
 texture = ExtResource("1_gtwx4")
-polygon = PackedVector2Array(-737, 206, 1183, 206, 1183, 35, 119, 93, -742, 93)
+polygon = PackedVector2Array(-732, -140, -710, -618, -240, -894, 2404, -894, 2896, -495, 2917, 1287, 2471, 1687, -199, 1687, -718, 1321, -732, 893, -575, 886, -568, 1257, -118, 1566, 2422, 1528, 2777, 1210, 2777, -422, 2345, -765, -176, -768, -568, -539, -596, -147)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Future/Floor/Floor1"]
-position = Vector2(262, 427)
-polygon = PackedVector2Array(-737, 206, 1183, 206, 1183, 35, 119, 94, -742, 94)
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Future/Floor/MainRoom"]
+position = Vector2(-2529, -300)
+
+[node name="Hallway1Roof" type="StaticBody2D" parent="Level/Future/Floor"]
+position = Vector2(351, 173)
+scale = Vector2(0.5, 0.5)
+
+[node name="Polygon2D" type="Polygon2D" parent="Level/Future/Floor/Hallway1Roof"]
+position = Vector2(1657, 641)
+rotation = 3.14159
+texture = ExtResource("1_gtwx4")
+polygon = PackedVector2Array(-613, 1039, -3593, 1037, -3587, 881, -615, 909)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Future/Floor/Hallway1Roof"]
+position = Vector2(-2529, -300)
+
+[node name="Hallway1Floor" type="StaticBody2D" parent="Level/Future/Floor"]
+position = Vector2(355, 757)
+scale = Vector2(0.5, 0.5)
+
+[node name="Polygon2D" type="Polygon2D" parent="Level/Future/Floor/Hallway1Floor"]
+position = Vector2(1657, 641)
+rotation = 3.14159
+texture = ExtResource("1_gtwx4")
+polygon = PackedVector2Array(-613, 1039, -3593, 1037, -3587, 881, -615, 909)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Future/Floor/Hallway1Floor"]
+position = Vector2(-2529, -300)
 
 [node name="Walls" type="Node2D" parent="Level/Future"]
 
-[node name="Wall1" type="StaticBody2D" parent="Level/Future/Walls"]
-position = Vector2(125, 0)
-collision_mask = 11
-
-[node name="Polygon2D" type="Polygon2D" parent="Level/Future/Walls/Wall1"]
-texture = ExtResource("2_y80jy")
-polygon = PackedVector2Array(-456, 530, -494, -48, -325, -64, -325, 526)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Future/Walls/Wall1"]
-polygon = PackedVector2Array(-456, 530, -494, -48, -325, -64, -325, 527, -325, 527)
-
 [node name="Objects" type="Node2D" parent="Level/Future"]
-
-[node name="Object1" type="StaticBody2D" parent="Level/Future/Objects"]
-position = Vector2(728, 444)
-script = ExtResource("3_om6jq")
-
-[node name="Polygon2D" type="Polygon2D" parent="Level/Future/Objects/Object1"]
-texture_repeat = 2
-position = Vector2(-714, -436)
-texture = ExtResource("4_ovpfr")
-polygon = PackedVector2Array(773, 509, 768, 386, 908, 358, 899, 504)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Future/Objects/Object1"]
-position = Vector2(-714, -436)
 
 [node name="Past" type="Node2D" parent="Level"]
 
 [node name="Floor" type="Node2D" parent="Level/Past"]
 
-[node name="Floor1" type="StaticBody2D" parent="Level/Past/Floor"]
-collision_mask = 11
-
-[node name="Polygon2D" type="Polygon2D" parent="Level/Past/Floor/Floor1"]
-position = Vector2(262, 427)
-texture = ExtResource("1_gtwx4")
-polygon = PackedVector2Array(-737, 206, 1183, 206, 1183, 35, 119, 93, -742, 93)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Past/Floor/Floor1"]
-position = Vector2(262, 427)
-polygon = PackedVector2Array(-737, 206, 1183, 206, 1183, 35, 119, 94, -742, 94)
-
 [node name="Walls" type="Node2D" parent="Level/Past"]
 
-[node name="Wall1" type="StaticBody2D" parent="Level/Past/Walls"]
-position = Vector2(125, 0)
-collision_mask = 11
-
-[node name="Polygon2D" type="Polygon2D" parent="Level/Past/Walls/Wall1"]
-texture = ExtResource("2_y80jy")
-polygon = PackedVector2Array(-456, 530, -494, -48, -325, -64, -325, 526)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Past/Walls/Wall1"]
-polygon = PackedVector2Array(-456, 530, -494, -48, -325, -64, -325, 527, -325, 527)
-
 [node name="Objects" type="Node2D" parent="Level/Past"]
-
-[node name="Object1" type="StaticBody2D" parent="Level/Past/Objects"]
-position = Vector2(1046, 441)
-rotation = 0.0146324
-scale = Vector2(-1, 1)
-script = ExtResource("5_4am0x")
-
-[node name="Polygon2D" type="Polygon2D" parent="Level/Past/Objects/Object1"]
-texture_filter = 1
-texture_repeat = 2
-position = Vector2(-838.349, -439.37)
-texture = ExtResource("5_jgfxg")
-polygon = PackedVector2Array(773, 509, 768, 386, 908, 358, 899, 504)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Level/Past/Objects/Object1"]
-position = Vector2(-838.349, -439.37)
 
 [node name="Entities" type="Node2D" parent="."]
 
