@@ -53,6 +53,7 @@ var in_future = false
 
 #footstep variables
 var can_play : bool = true
+@warning_ignore(\"unused_signal\")
 signal step
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -64,6 +65,7 @@ var instance
 var can_timeshift = true
 var tut1 = false
 var tut2 = false
+var tut3 = false
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
@@ -307,10 +309,15 @@ func _on_timeshift_timeout():
 	if !tut2:
 		$Head/Camera3D/TutorialText2.queue_free()
 		tut2 = true
+	if !tut3:
+		$Head/Camera3D/TutorialText3.visible = true
 	$TimeshiftCD.start()
 
 func _on_timeshift_cd_timeout():
 	can_timeshift = true
+	if !tut3:
+		$Head/Camera3D/TutorialText3.queue_free()
+		tut3 = true
 "
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yr7rn"]
@@ -612,7 +619,7 @@ _data = {
 
 [sub_resource type="Animation" id="Animation_0oeus"]
 resource_name = "Blink"
-length = 0.1
+length = 0.2
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -621,7 +628,7 @@ tracks/0/path = NodePath("Head/Camera3D/BlinkTop:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1),
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, 0.131218, -0.0655296), Vector3(0, 0.0592978, -0.0655296)]
@@ -633,7 +640,7 @@ tracks/1/path = NodePath("Head/Camera3D/BlinkBottom:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1),
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, -0.137559, -0.0655296), Vector3(0, -0.0596992, -0.0655296)]
@@ -665,7 +672,7 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id="Animation_538xn"]
 resource_name = "Unblink"
-length = 0.1
+length = 0.2
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -674,7 +681,7 @@ tracks/0/path = NodePath("Head/Camera3D/BlinkTop:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1),
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, 0.0592978, -0.0655296), Vector3(0, 0.131218, -0.0655296)]
@@ -686,7 +693,7 @@ tracks/1/path = NodePath("Head/Camera3D/BlinkBottom:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1),
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, -0.0596992, -0.0655296), Vector3(0, -0.137559, -0.0655296)]
@@ -698,7 +705,7 @@ tracks/2/path = NodePath("Head/Camera3D/BlinkTop:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1),
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -710,7 +717,7 @@ tracks/3/path = NodePath("Head/Camera3D/BlinkBottom:visible")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1),
+"times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -806,7 +813,6 @@ mesh = SubResource("QuadMesh_6xy0j")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.204771, -0.164592, -0.26738)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Head/Camera3D/Light"]
-visible = false
 spot_range = 8.117
 spot_angle = 29.5254
 
@@ -841,13 +847,13 @@ mesh = SubResource("PlaneMesh_v6y8k")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -121.0
-offset_right = 121.0
-offset_bottom = 31.0
+offset_left = -124.5
+offset_right = 124.5
+offset_bottom = 28.0
 grow_horizontal = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/normal_font_size = 15
-text = "Press Q to jump forwards in time"
+text = "Press Q to jump forwards in time."
 
 [node name="TutorialText2" type="RichTextLabel" parent="Head/Camera3D"]
 visible = false
@@ -863,7 +869,23 @@ grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 theme_override_font_sizes/normal_font_size = 10
-text = "Switching between the future and the present lets you avoid obstacles"
+text = "Switching between the future and the present lets you avoid obstacles."
+
+[node name="TutorialText3" type="RichTextLabel" parent="Head/Camera3D"]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -151.5
+offset_top = -18.0
+offset_right = 151.5
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+theme_override_font_sizes/normal_font_size = 10
+text = "You can only stay in the future for 7 seconds so make it count."
 
 [node name="Aimanim" type="AnimationPlayer" parent="."]
 libraries = {
@@ -890,9 +912,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
 
 [node name="Timeshift" type="Timer" parent="."]
 wait_time = 7.0
+one_shot = true
 
 [node name="TimeshiftCD" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 3.0
+one_shot = true
 
 [connection signal="timeout" from="Timeshift" to="." method="_on_timeshift_timeout"]
 [connection signal="timeout" from="TimeshiftCD" to="." method="_on_timeshift_cd_timeout"]

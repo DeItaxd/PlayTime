@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://db78l0b53215y"]
+[gd_scene load_steps=16 format=3 uid="uid://db78l0b53215y"]
 
 [ext_resource type="Texture2D" uid="uid://c4ar7w2hux7pu" path="res://images/PurplyBlueSky.png" id="1_ytf6a"]
 [ext_resource type="PackedScene" uid="uid://bvnq4ywoa0omv" path="res://LoafbrrAssets/MineAndCavesSet/scenes/Ground/Ground_Mines/ground_mines_a.tscn" id="2_winj4"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://models/world/terrain/future_object.gd" id="5_jovua"]
 [ext_resource type="PackedScene" uid="uid://bx3mjtpa1s527" path="res://LoafbrrAssets/MineAndCavesSet/scenes/Panel_Wood/panel_wood_entrance_b.tscn" id="5_n0lmn"]
 [ext_resource type="PackedScene" uid="uid://0nrf7ptm47u5" path="res://LoafbrrAssets/MineAndCavesSet/scenes/Panel_Wood/panel_wood_a.tscn" id="6_n77d6"]
+[ext_resource type="PackedScene" uid="uid://vawfhl5k48p4" path="res://LoafbrrAssets/MineAndCavesSet/scenes/Wood_Platform/wood_platform_45_deg_a.tscn" id="12_m5u0a"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_pyglq"]
 panorama = ExtResource("1_ytf6a")
@@ -84,7 +85,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.0699, 0, -3.92376)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.1019, 0, -3.92376)
 
 [node name="Ground_Mines_A12" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.1332, 0, -3.92376)
+transform = Transform3D(0.938938, 0, 0.344086, 0, 1, 0, -0.344086, 0, 0.938938, -17.7522, 0, -5.26585)
+
+[node name="Ground_Mines_A23" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
+transform = Transform3D(0.998721, 0, -0.0505581, 0, 1, 0, 0.0505581, 0, 0.998721, -17.0659, 0, -1.21357)
 
 [node name="Ground_Mines_A15" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.1019, 0, -7.75477)
@@ -93,13 +97,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.1019, 0, -7.75477)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.1446, 0, -7.75477)
 
 [node name="Ground_Mines_A16" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.1332, 0, -7.75477)
+transform = Transform3D(0.712577, 0, 0.701594, 0, 1, 0, -0.701594, 0, 0.712577, -19.9606, 0, -8.51895)
 
 [node name="Ground_Mines_A17" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.9717, 0, 0)
+transform = Transform3D(0.914692, 0, -0.404152, 0, 1, 0, 0.404152, 0, 0.914692, -24.9137, 0, 0.882963)
 
 [node name="Ground_Mines_A27" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.1887, 0, 0)
+transform = Transform3D(0.896649, 0, 0.442743, 0, 1, 0, -0.442743, 0, 0.896649, -19.3242, 0, 0.535939)
 
 [node name="Ground_Mines_A18" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.003, 0, 0)
@@ -116,17 +120,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.9717, 0, 7.54861)
 [node name="Ground_Mines_A22" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.003, 0, 7.54861)
 
-[node name="Ground_Mines_A23" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.9717, 0, -3.92376)
-
 [node name="Ground_Mines_A24" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.003, 0, -3.92376)
 
 [node name="Ground_Mines_A25" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.9717, 0, -7.75477)
+transform = Transform3D(0.859772, 0, -0.510678, 0, 1, 0, 0.510678, 0, 0.859772, -23.1533, 0, -11.0453)
 
 [node name="Ground_Mines_A26" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Ground" instance=ExtResource("2_winj4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.003, 0, -7.75477)
+transform = Transform3D(0.946604, 0, 0.322398, 0, 1, 0, -0.322398, 0, 0.946604, -28.5104, 0, -7.02548)
 
 [node name="Walls" type="Node3D" parent="SubViewportContainer/SubViewport/Level/World/Terrain"]
 
@@ -151,6 +152,60 @@ transform = Transform3D(0.990266, 0, -0.13919, 0, 1, 0, 0.13919, 0, 0.990266, -1
 [node name="Wall_Mines_A18" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
 transform = Transform3D(0.928874, 0, 0.370395, 0, 1, 0, -0.370395, 0, 0.928874, -22.38, -1.03076, -1.36847)
 
+[node name="Wall_Mines_A20" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.975882, 0, 0.218296, 0, 1, 0, -0.218296, 0, 0.975882, -22.38, -4.8051, -1.36847)
+
+[node name="Wall_Mines_A21" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.975882, 0, 0.218296, 0, 1, 0, -0.218296, 0, 0.975882, -22.38, -8.50422, -1.36847)
+
+[node name="Wall_Mines_A40" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -24.3215, -8.50422, -5.35739)
+
+[node name="Wall_Mines_A41" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.832757, -0.553639, 2.42003e-08, 0, -4.37114e-08, -1, 0.553638, 0.832757, -3.64009e-08, -25.0582, -8.50422, -9.78765)
+
+[node name="Wall_Mines_A42" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.832757, -0.553639, 2.42003e-08, 0, -4.37114e-08, -1, 0.553638, 0.832757, -3.64009e-08, -21.9132, -8.50422, -8.11794)
+
+[node name="Wall_Mines_A43" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.364665, -0.931138, 4.07013e-08, 1.47927e-15, -4.37114e-08, -1, 0.931138, 0.364665, -1.594e-08, -19.0005, -8.50422, -4.4157)
+
+[node name="Wall_Mines_A22" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.913318, 0, -0.407247, 0, 1, 0, 0.407247, 0, 0.913318, -24.7481, -4.11834, -1.02907)
+
+[node name="Wall_Mines_A39" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.913318, 0, -0.407247, 0, 1, 0, 0.407247, 0, 0.913318, -24.7481, -8.31847, -1.02907)
+
+[node name="Wall_Mines_A25" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.0353528, 0, -0.999375, 0, 1, 0, 0.999375, 0, 0.0353528, -26.1972, -4.14117, -3.84892)
+
+[node name="Wall_Mines_A38" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.0353528, 0, -0.999375, 0, 1, 0, 0.999375, 0, 0.0353528, -26.1972, -8.26802, -3.84892)
+
+[node name="Wall_Mines_A26" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.334958, 0, -0.942233, 0, 1, 0, 0.942233, 0, 0.334958, -26.8807, -4.16301, -7.60844)
+
+[node name="Wall_Mines_A37" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.334958, 0, -0.942233, 0, 1, 0, 0.942233, 0, 0.334958, -26.8807, -8.16981, -7.60844)
+
+[node name="Wall_Mines_A23" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.308303, 0, 0.951288, 0, 1, 0, -0.951288, 0, -0.308303, -19.2428, -4.15753, -3.74054)
+
+[node name="Wall_Mines_A32" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.308303, 0, 0.951288, 0, 1, 0, -0.951288, 0, -0.308303, -19.2428, -8.32953, -3.74054)
+
+[node name="Wall_Mines_A30" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.610421, 0, 0.792077, 0, 1, 0, -0.792077, 0, -0.610421, -20.7227, -4.15753, -6.73748)
+
+[node name="Wall_Mines_A33" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.610421, 0, 0.792077, 0, 1, 0, -0.792077, 0, -0.610421, -20.7227, -8.36519, -6.73748)
+
+[node name="Wall_Mines_A24" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.977783, 0, 0.209618, 0, 1, 0, -0.209618, 0, 0.977783, -19.8703, -4.20316, -1.81529)
+
+[node name="Wall_Mines_A31" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(0.977783, 0, 0.209618, 0, 1, 0, -0.209618, 0, 0.977783, -19.8703, -8.18926, -1.81529)
+
 [node name="Wall_Mines_A4" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -8.0566, -1.04602, -2.00057)
 
@@ -166,11 +221,29 @@ transform = Transform3D(-0.946119, 0, 0.323818, 0, 1, 0, -0.323818, 0, -0.946119
 [node name="Wall_Mines_A11" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
 transform = Transform3D(-0.99907, 0, 0.0431312, 0, 1, 0, -0.0431312, 0, -0.99907, -20.9113, -1.04602, -9.66739)
 
+[node name="Wall_Mines_A29" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.8095, 0, 0.587122, 0, 1, 0, -0.587122, 0, -0.8095, -22.9444, -4.19385, -8.723)
+
+[node name="Wall_Mines_A34" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.8095, 0, 0.587122, 0, 1, 0, -0.587122, 0, -0.8095, -23.242, -8.19405, -8.50168)
+
 [node name="Wall_Mines_A12" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
 transform = Transform3D(-0.99907, 0, 0.0431312, 0, 1, 0, -0.0431312, 0, -0.99907, -24.848, -1.04602, -9.66739)
 
+[node name="Wall_Mines_A28" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.99907, 0, 0.0431312, 0, 1, 0, -0.0431312, 0, -0.99907, -24.848, -4.54126, -9.66739)
+
+[node name="Wall_Mines_A36" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.99907, 0, 0.0431312, 0, 1, 0, -0.0431312, 0, -0.99907, -24.848, -8.17624, -9.66739)
+
 [node name="Wall_Mines_A13" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
 transform = Transform3D(-0.837719, 0, -0.546102, 0, 1, 0, 0.546102, 0, -0.837719, -27.6793, -1.04602, -8.63553)
+
+[node name="Wall_Mines_A27" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.837719, 0, -0.546102, 0, 1, 0, 0.546102, 0, -0.837719, -27.6793, -4.68826, -8.63553)
+
+[node name="Wall_Mines_A35" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
+transform = Transform3D(-0.837719, 0, -0.546102, 0, 1, 0, 0.546102, 0, -0.837719, -27.6793, -8.45603, -8.63553)
 
 [node name="Wall_Mines_A14" parent="SubViewportContainer/SubViewport/Level/World/Terrain/Walls" instance=ExtResource("3_4wuft")]
 transform = Transform3D(-0.234056, 0, -0.972223, 0, 1, 0, 0.972223, 0, -0.234056, -29.5618, -1.04602, -5.40055)
@@ -249,4 +322,12 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -4.230
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -4.31927, -0.792071, 3.27189)
 
 [node name="Player" parent="SubViewportContainer/SubViewport" instance=ExtResource("3_xgt5b")]
-transform = Transform3D(1.41421, 0, 1.41421, 0, 2, 0, -1.41421, 0, 1.41421, 0, 0.952023, 0)
+transform = Transform3D(0.197389, 0, 1.99023, 0, 2, 0, -1.99023, 0, 0.197389, 0, 0.952023, 0)
+
+[node name="Wood_Platform_45Deg_A" parent="." instance=ExtResource("12_m5u0a")]
+transform = Transform3D(0.554815, 0, 0.831973, 0, 1, 0, -0.831973, 0, 0.554815, -20.2433, -0.175185, -4.19968)
+script = ExtResource("5_jovua")
+
+[node name="Wood_Platform_45Deg_A2" parent="." instance=ExtResource("12_m5u0a")]
+transform = Transform3D(0.554815, 0, 0.831973, 0, 1, 0, -0.831973, 0, 0.554815, -24.3786, -0.175185, -3.36973)
+script = ExtResource("5_jovua")
