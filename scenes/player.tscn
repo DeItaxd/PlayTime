@@ -1,9 +1,8 @@
-[gd_scene load_steps=34 format=3 uid="uid://d0bbllal0am4n"]
+[gd_scene load_steps=30 format=3 uid="uid://d0bbllal0am4n"]
 
 [ext_resource type="Shader" path="res://shaders/outline.gdshader" id="1_66tcc"]
 [ext_resource type="Shader" path="res://shaders/outline_real.gdshader" id="2_uy43f"]
 [ext_resource type="Shader" path="res://shaders/dark_outline.gdshader" id="3_0dms5"]
-[ext_resource type="Shader" path="res://shaders/dark_outline_real.gdshader" id="3_e8185"]
 [ext_resource type="Texture2D" uid="uid://ck78u4nsdekvb" path="res://images/crosshair.png" id="3_f1pg7"]
 [ext_resource type="PackedScene" uid="uid://g0l2m41tjiug" path="res://models/weapons/mp5.tscn" id="3_wewjs"]
 [ext_resource type="AudioStream" uid="uid://h1hp5t71ksqn" path="res://sounds/mp5-reload.mp3" id="4_8drp7"]
@@ -68,8 +67,6 @@ var instance
 @onready var crosshair = $CanvasLayer/Crosshair
 @onready var guncamera = $CanvasLayer/SubViewportContainer/SubViewport/GunCamera
 @onready var gun = $Head/Camera3D/mp5
-@onready var pixel_outline = $Head/Camera3D/PixelOutline
-@onready var pixel_outline_real = $CanvasLayer/SubViewportContainer/SubViewport/GunCamera/PixelOutline
 @onready var dark_outline = $Head/Camera3D/DarkOutline
 @onready var dark_outline_real = $CanvasLayer/SubViewportContainer/SubViewport/GunCamera/DarkOutline
 @onready var blink_anim = $Blinkanim
@@ -81,8 +78,6 @@ func _ready():
 	var MainEnv = camera.get_environment()
 	guncamera.set_environment(MainEnv)
 	def_weapon_pos = gun.position
-	pixel_outline.visible = true
-	pixel_outline_real.visible = true
 
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -265,8 +260,6 @@ func reload():
 func blink():
 	if in_void == false:
 		blink_anim.play(\"Blink\")
-		pixel_outline.visible = false
-		pixel_outline_real.visible = false
 		dark_outline.visible = true
 		dark_outline_real.visible = true
 		Signals.emit_signal(\"voided\")
@@ -274,8 +267,6 @@ func blink():
 		blink_anim.play(\"Unblink\")
 	else:
 		blink_anim.play(\"Blink\")
-		pixel_outline.visible = true
-		pixel_outline_real.visible = true
 		dark_outline.visible = false
 		dark_outline_real.visible = false
 		Signals.emit_signal(\"voided\")
@@ -289,7 +280,15 @@ func light():
 		gun_light_anim.play(\"Unlight\")
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_deki5"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yr7rn"]
+shader = ExtResource("3_0dms5")
+shader_parameter/shake = 0.015
+shader_parameter/noiseQuality = 250.0
+shader_parameter/noiseIntensity = 0.001
+shader_parameter/offsetIntensity = 0.05
+shader_parameter/colorOffsetIntensity = 0.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_htih2"]
 render_priority = 0
 shader = ExtResource("1_66tcc")
 shader_parameter/depth_threshold = 0.05
@@ -298,17 +297,8 @@ shader_parameter/darken_amount = 0.6
 shader_parameter/lighten_amount = 1.5
 shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 
-[sub_resource type="QuadMesh" id="QuadMesh_ddlff"]
-material = SubResource("ShaderMaterial_deki5")
-flip_faces = true
-size = Vector2(2, 2)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0iarh"]
-render_priority = 0
-shader = ExtResource("3_0dms5")
-
-[sub_resource type="QuadMesh" id="QuadMesh_7fhuh"]
-material = SubResource("ShaderMaterial_0iarh")
+[sub_resource type="QuadMesh" id="QuadMesh_wcv41"]
+material = SubResource("ShaderMaterial_htih2")
 flip_faces = true
 size = Vector2(2, 2)
 
@@ -316,7 +306,7 @@ size = Vector2(2, 2)
 radius = 0.22
 height = 0.9
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_h5e84"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j00rk"]
 render_priority = 0
 shader = ExtResource("2_uy43f")
 shader_parameter/depth_threshold = 0.05
@@ -325,17 +315,8 @@ shader_parameter/darken_amount = 0.6
 shader_parameter/lighten_amount = 1.5
 shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 
-[sub_resource type="QuadMesh" id="QuadMesh_usro7"]
-material = SubResource("ShaderMaterial_h5e84")
-flip_faces = true
-size = Vector2(2, 2)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_u1s3s"]
-render_priority = 0
-shader = ExtResource("3_e8185")
-
-[sub_resource type="QuadMesh" id="QuadMesh_axgmq"]
-material = SubResource("ShaderMaterial_u1s3s")
+[sub_resource type="QuadMesh" id="QuadMesh_6xy0j"]
+material = SubResource("ShaderMaterial_j00rk")
 flip_faces = true
 size = Vector2(2, 2)
 
@@ -683,15 +664,18 @@ render_target_update_mode = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185817, 0)
 cull_mask = 4
 
-[node name="PixelOutline" type="MeshInstance3D" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
+[node name="DarkOutline" type="ColorRect" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
 visible = false
-layers = 4
-mesh = SubResource("QuadMesh_ddlff")
+material = SubResource("ShaderMaterial_yr7rn")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="DarkOutline" type="MeshInstance3D" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
-visible = false
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
 layers = 4
-mesh = SubResource("QuadMesh_7fhuh")
+mesh = SubResource("QuadMesh_wcv41")
 
 [node name="Bean" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_u5jka")
@@ -702,13 +686,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18578, 0)
 [node name="Camera3D" type="Camera3D" parent="Head"]
 cull_mask = 983035
 
-[node name="PixelOutline" type="MeshInstance3D" parent="Head/Camera3D"]
+[node name="DarkOutline" type="ColorRect" parent="Head/Camera3D"]
 visible = false
-mesh = SubResource("QuadMesh_usro7")
+material = SubResource("ShaderMaterial_yr7rn")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="DarkOutline" type="MeshInstance3D" parent="Head/Camera3D"]
-visible = false
-mesh = SubResource("QuadMesh_axgmq")
+[node name="PixelOutline" type="MeshInstance3D" parent="Head/Camera3D"]
+mesh = SubResource("QuadMesh_6xy0j")
 
 [node name="mp5" parent="Head/Camera3D" instance=ExtResource("3_wewjs")]
 transform = Transform3D(0.99863, 0.00118737, 0.0523225, 0, 0.999743, -0.0226873, -0.052336, 0.0226563, 0.998372, 0.22, -0.15, -0.883)
