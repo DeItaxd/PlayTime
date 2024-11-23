@@ -41,9 +41,9 @@ Walk backwards - S
 Walk right - D
 Walk left - A
 Jump - Space
+Run - Shift
 Timeshift - Q
-Flashlight - F
-Shoot - LMB"
+Flashlight - F"
 fit_content = true
 autowrap_mode = 0
 

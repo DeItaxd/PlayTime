@@ -119,6 +119,10 @@ escape={
 3d_physics/layer_2="player"
 3d_physics/layer_3="items"
 
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.0064667, 0.0064667, 0.00646669, 1)
+
 [shader_globals]
 
 sgt_player_position={

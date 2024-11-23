@@ -1,12 +1,7 @@
-[gd_scene load_steps=34 format=3 uid="uid://d0bbllal0am4n"]
+[gd_scene load_steps=20 format=3 uid="uid://d0bbllal0am4n"]
 
-[ext_resource type="Shader" path="res://shaders/outline.gdshader" id="1_66tcc"]
 [ext_resource type="Shader" path="res://shaders/outline_real.gdshader" id="2_uy43f"]
 [ext_resource type="Shader" path="res://shaders/dark_outline.gdshader" id="3_0dms5"]
-[ext_resource type="Texture2D" uid="uid://ck78u4nsdekvb" path="res://images/crosshair.png" id="3_f1pg7"]
-[ext_resource type="PackedScene" uid="uid://g0l2m41tjiug" path="res://models/weapons/mp5.tscn" id="3_wewjs"]
-[ext_resource type="AudioStream" uid="uid://h1hp5t71ksqn" path="res://sounds/mp5-reload.mp3" id="4_8drp7"]
-[ext_resource type="AudioStream" uid="uid://cnhcntbpl5bun" path="res://sounds/9mm Pistol Dry Fire.mp3" id="5_abqcc"]
 [ext_resource type="AudioStream" uid="uid://u0dk0vr0813t" path="res://sounds/light_switch.mp3" id="5_ulfj6"]
 [ext_resource type="Script" path="res://scenes/FootstepManager.gd" id="8_toltb"]
 [ext_resource type="AudioStream" uid="uid://cwfu1mh4vxx8o" path="res://sounds/Footstep.mp3" id="9_gx2bq"]
@@ -31,22 +26,10 @@ var t_bob = 0.0
 const BASE_FOV = 75.0
 const FOV_CHANGE = 1.5
 
-#gun variables
-var has_gun = false
 var has_light = true
-var aiming = false
-var weapon_sway_amount = 5.0
-var weapon_rotation_sway = -0.2
-var aim_rotation_sway = -0.01
-var weapon_rotation_amount = 0.2
-var aim_rotation_amount = 0.07
-var def_weapon_pos : Vector3
 var cam_rotation_amount = 0.1
 var mouse_input : Vector2
 var allowed_to_sway = true
-
-#ammo variables
-var current_ammo = 30
 
 #blink variables
 var in_future = false
@@ -59,9 +42,6 @@ signal step
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = 9.8
 
-var bullet = load(\"res://models/weapons/Bullet.tscn\")
-var instance
-
 var can_timeshift = true
 var tut1 = false
 var tut2 = false
@@ -69,24 +49,11 @@ var tut3 = false
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
-@onready var gun_anim = $Head/Camera3D/mp5/AnimationPlayer
-@onready var gun_barrel = $Head/Camera3D/mp5/RayCast3D
-@onready var aim_anim = $Aimanim
-@onready var dryfire_anim = $Dryfire
-@onready var crosshair = $CanvasLayer/Crosshair
-@onready var guncamera = $CanvasLayer/SubViewportContainer/SubViewport/GunCamera
-@onready var gun = $Head/Camera3D/mp5
 @onready var vhs_outline = $Head/Camera3D/VHSOutline
-@onready var vhs_outline_real = $CanvasLayer/SubViewportContainer/SubViewport/GunCamera/VHSOutline
 @onready var blink_anim = $Blinkanim
-@onready var gun_light = $Head/Camera3D/mp5/SpotLight3D
-@onready var gun_light_anim = $Head/Camera3D/mp5/Lightanim
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	var MainEnv = camera.get_environment()
-	guncamera.set_environment(MainEnv)
-	def_weapon_pos = gun.position
 
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -138,78 +105,22 @@ func _physics_process(delta):
 	var target_fov = BASE_FOV + FOV_CHANGE * velocity_clamped
 	camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
 	
-	if has_gun:
-		gun.visible = true
-	else:
-		gun.visible = false
-	
-	#Shooting
-	if gun.visible:
-		if Input.is_action_pressed(\"shoot\"):
-			shoot()
-		
-		if Input.is_action_just_pressed(\"aim\"):
-			aim()
-		
-		if Input.is_action_just_pressed(\"reload\"):
-			reload()
-	
 	if Input.is_action_just_pressed(\"blink\"):
 		blink()
 	
 	if Input.is_action_just_pressed(\"escape\"):
-		get_tree().quit()
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		get_tree().change_scene_to_file(\"res://scenes/world/menu.tscn\")
 	
 	if Input.is_action_just_pressed(\"light\"):
 		light()
 	
 	move_and_slide()
 	cam_tilt(input_dir.x, delta)
-	weapon_tilt(input_dir.x, delta)
-	weapon_sway(delta)
-	weapon_bob(velocity.length(),delta)
-	
-	for i in get_slide_collision_count():
-		var c = get_slide_collision(i)
-		if c.get_collider() is RigidBody3D:
-			c.get_collider().apply_central_impulse(-c.get_normal() * push_force)
 
 func cam_tilt(input_x, delta):
 	if camera:
 		camera.rotation.z = lerp(camera.rotation.z, -input_x * cam_rotation_amount, 10 * delta)
-
-func weapon_tilt(input_x, delta):
-	if allowed_to_sway:
-		if gun:
-			gun.rotation.z = lerp(gun.rotation.z, -input_x * weapon_rotation_amount, 10 * delta)
-	else:
-		if gun:
-			gun.rotation.z = lerp(gun.rotation.z, -input_x * aim_rotation_amount, 10 * delta)
-
-func weapon_sway(delta):
-	if allowed_to_sway:
-		mouse_input = lerp(mouse_input, Vector2.ZERO, 10 * delta)
-		gun.rotation.x = lerp(gun.rotation.x, mouse_input.y * weapon_rotation_sway, 10 * delta)
-		gun.rotation.y = lerp(gun.rotation.y, mouse_input.x * weapon_rotation_sway, 10 * delta)
-	else:
-		mouse_input = lerp(mouse_input, Vector2.ZERO, 10 * delta)
-		gun.rotation.x = lerp(gun.rotation.x, mouse_input.y * aim_rotation_sway, 10 * delta)
-		gun.rotation.y = lerp(gun.rotation.y, mouse_input.x * aim_rotation_sway, 10 * delta)
-
-func weapon_bob(vel : float, delta):
-	if allowed_to_sway:
-		if gun:
-			if vel > 0.1:
-				var bob_amount : float = 0.01
-				var bob_freq : float = 0.01
-				gun.position.y = lerp(gun.position.y, def_weapon_pos.y + sin(Time.get_ticks_msec() * bob_freq) * bob_amount, 10 * delta)
-				gun.position.x = lerp(gun.position.x, def_weapon_pos.x + sin(Time.get_ticks_msec() * bob_freq * 0.5) * bob_amount, 10 * delta)
-			else:
-				gun.position.y = lerp(gun.position.y, def_weapon_pos.y, 10 * delta)
-				gun.position.x = lerp(gun.position.x, def_weapon_pos.x, 10 * delta)
-
-func _process(_delta):
-	guncamera.global_transform = camera.global_transform
 
 func _headbob(time) -> Vector3:
 	var pos = Vector3.ZERO
@@ -226,51 +137,6 @@ func _headbob(time) -> Vector3:
 	
 	return pos
 
-func aim():
-	if !aim_anim.is_playing():
-			if aiming == false:
-				aim_anim.play(\"Aim\")
-				crosshair.visible = false
-				allowed_to_sway = false
-				aiming = true
-			else:
-				aim_anim.play(\"Unaim\")
-				crosshair.visible = true
-				allowed_to_sway = true
-				aiming = false
-
-func shoot():
-	if current_ammo != 0:
-		if !gun_anim.is_playing():
-			if !aim_anim.is_playing():
-				gun_anim.play(\"Shoot\")
-				instance = bullet.instantiate()
-				instance.position = gun_barrel.global_position
-				instance.transform.basis = gun_barrel.global_transform.basis
-				get_parent().add_child(instance)
-				current_ammo -= 1
-	else:
-		dryfire_anim.play(\"Dryfire\")
-
-func reload():
-	if current_ammo < 31:
-		if aiming:
-			if current_ammo == 30:
-				aim_anim.play(\"Aimreload\")
-				aiming = false
-				current_ammo = 31
-			else:
-				aim_anim.play(\"Aimreload\")
-				aiming = false
-				current_ammo = 30
-		else:
-			if current_ammo == 30:
-				aim_anim.play(\"Reload\")
-				current_ammo = 31
-			else:
-				aim_anim.play(\"Reload\")
-				current_ammo = 30
-
 func blink():
 	if !in_future and can_timeshift:
 		if !tut1:
@@ -280,7 +146,6 @@ func blink():
 			$Head/Camera3D/TutorialText2.visible = true
 		blink_anim.play(\"Blink\")
 		vhs_outline.visible = true
-		vhs_outline_real.visible = true
 		Signals.emit_signal(\"timeshift\")
 		in_future = true
 		blink_anim.play(\"Unblink\")
@@ -293,16 +158,10 @@ func light():
 			$Head/Camera3D/Light/Lightanim.play(\"Light\")
 		else:
 			$Head/Camera3D/Light/Lightanim.play(\"Unlight\")
-	else:
-		if !gun_light.visible:
-			gun_light_anim.play(\"Light\")
-		else:
-			gun_light_anim.play(\"Unlight\")
 
 func _on_timeshift_timeout():
 	blink_anim.play(\"Blink\")
 	vhs_outline.visible = false
-	vhs_outline_real.visible = false
 	Signals.emit_signal(\"timeshift\")
 	in_future = false
 	blink_anim.play(\"Unblink\")
@@ -318,7 +177,21 @@ func _on_timeshift_cd_timeout():
 	if !tut3:
 		$Head/Camera3D/TutorialText3.queue_free()
 		tut3 = true
+
+func _on_pit_1_body_entered(body):
+	if body is CharacterBody3D and body.is_inside_tree():
+		body.global_transform.origin = Vector3(-16.656, 0.952, -4.69)
+		body.global_transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(84.3))
+
+func _on_pit_2_body_entered(body: Node3D) -> void:
+	if body is CharacterBody3D and body.is_inside_tree():
+		body.global_transform.origin = Vector3(-28.016, 0.66, 6.342)
+		body.global_transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(176.3))
 "
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u5jka"]
+radius = 0.22
+height = 0.9
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yr7rn"]
 shader = ExtResource("3_0dms5")
@@ -327,24 +200,6 @@ shader_parameter/noiseQuality = 250.0
 shader_parameter/noiseIntensity = 0.001
 shader_parameter/offsetIntensity = 0.05
 shader_parameter/colorOffsetIntensity = 0.5
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_htih2"]
-render_priority = 0
-shader = ExtResource("1_66tcc")
-shader_parameter/depth_threshold = 0.05
-shader_parameter/normal_threshold = 0.6
-shader_parameter/darken_amount = 0.6
-shader_parameter/lighten_amount = 1.5
-shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
-
-[sub_resource type="QuadMesh" id="QuadMesh_wcv41"]
-material = SubResource("ShaderMaterial_htih2")
-flip_faces = true
-size = Vector2(2, 2)
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u5jka"]
-radius = 0.22
-height = 0.9
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_j00rk"]
 render_priority = 0
@@ -440,182 +295,6 @@ size = Vector2(0.27, 0.12)
 [sub_resource type="PlaneMesh" id="PlaneMesh_v6y8k"]
 material = SubResource("StandardMaterial3D_wc6dd")
 size = Vector2(0.27, 0.12)
-
-[sub_resource type="Animation" id="Animation_lp222"]
-resource_name = "Aim"
-length = 0.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Head/Camera3D/mp5:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(-2, -2),
-"update": 0,
-"values": [Vector3(0.22, -0.15, -0.883), Vector3(0, -0.1, -0.65)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Head/Camera3D/mp5:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(-2, -2),
-"update": 0,
-"values": [Vector3(0.0226893, 0.0523599, 0), Vector3(-0.0261799, 0, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_vc1oe"]
-resource_name = "Aimreload"
-length = 2.91
-step = 0.01
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Head/Camera3D/mp5:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.44, 2.41, 2.54, 2.64, 2.91),
-"transitions": PackedFloat32Array(-2, -2, -2, -2, -2, -2, -2),
-"update": 0,
-"values": [Vector3(0, -0.1, -0.65), Vector3(0.22, -0.515, -0.883), Vector3(0.22, -0.62, -0.678), Vector3(0.22, -0.62, -0.678), Vector3(0.22, -0.595, -0.815), Vector3(0.22, -0.515, -0.883), Vector3(0.22, -0.15, -0.883)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Head/Camera3D/mp5:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.44, 2.41, 2.54, 2.64, 2.91),
-"transitions": PackedFloat32Array(-2, -2, -2, -2, -2, -2, -2),
-"update": 0,
-"values": [Vector3(-0.0261799, 0, 0), Vector3(-0.357792, 0.242601, -0.190241), Vector3(-0.548033, 0.242601, -0.380482), Vector3(-0.548033, 0.0523599, 0.570723), Vector3(-0.420624, 0.0523599, 0.380482), Vector3(-0.357792, 0.0523599, 0.190241), Vector3(0.0226893, 0.0523599, 0)]
-}
-tracks/2/type = "audio"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Head/Camera3D/mp5/Reload")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"clips": [{
-"end_offset": 0.366585,
-"start_offset": 0.286893,
-"stream": ExtResource("4_8drp7")
-}],
-"times": PackedFloat32Array(0.0168925)
-}
-tracks/2/use_blend = true
-
-[sub_resource type="Animation" id="Animation_h6j81"]
-resource_name = "Reload"
-length = 2.91
-step = 0.01
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Head/Camera3D/mp5:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.44, 2.41, 2.54, 2.64, 2.91),
-"transitions": PackedFloat32Array(-2, -2, -2, -2, -2, -2, -2),
-"update": 0,
-"values": [Vector3(0.22, -0.15, -0.883), Vector3(0.22, -0.515, -0.883), Vector3(0.22, -0.62, -0.678), Vector3(0.22, -0.62, -0.678), Vector3(0.22, -0.595, -0.815), Vector3(0.22, -0.515, -0.883), Vector3(0.22, -0.15, -0.883)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Head/Camera3D/mp5:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.44, 2.41, 2.54, 2.64, 2.91),
-"transitions": PackedFloat32Array(-2, -2, -2, -2, -2, -2, -2),
-"update": 0,
-"values": [Vector3(0.0226893, 0.0523599, 0), Vector3(-0.357792, 0.242601, -0.190241), Vector3(-0.548033, 0.242601, -0.380482), Vector3(-0.548033, 0.0523599, 0.570723), Vector3(-0.420624, 0.0523599, 0.380482), Vector3(-0.357792, 0.0523599, 0.190241), Vector3(0.0226893, 0.0523599, 0)]
-}
-tracks/2/type = "audio"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Head/Camera3D/mp5/Reload")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"clips": [{
-"end_offset": 0.350646,
-"start_offset": 0.270954,
-"stream": ExtResource("4_8drp7")
-}],
-"times": PackedFloat32Array(0.000954032)
-}
-tracks/2/use_blend = true
-
-[sub_resource type="Animation" id="Animation_q6kf6"]
-resource_name = "Unaim"
-length = 0.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Head/Camera3D/mp5:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(-2, -2),
-"update": 0,
-"values": [Vector3(0, -0.1, -0.65), Vector3(0.22, -0.15, -0.883)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Head/Camera3D/mp5:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(-2, -2),
-"update": 0,
-"values": [Vector3(-0.0261799, 0, 0), Vector3(0.0226893, 0.0523599, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_1ds0g"]
-_data = {
-"Aim": SubResource("Animation_lp222"),
-"Aimreload": SubResource("Animation_vc1oe"),
-"Reload": SubResource("Animation_h6j81"),
-"Unaim": SubResource("Animation_q6kf6")
-}
-
-[sub_resource type="Animation" id="Animation_cxd3q"]
-resource_name = "Dryfire"
-length = 0.08
-tracks/0/type = "audio"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Head/Camera3D/mp5/Dryfire")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"clips": [{
-"end_offset": 0.0,
-"start_offset": 0.0,
-"stream": ExtResource("5_abqcc")
-}],
-"times": PackedFloat32Array(0)
-}
-tracks/0/use_blend = true
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_hl81c"]
-_data = {
-"Dryfire": SubResource("Animation_cxd3q")
-}
 
 [sub_resource type="Animation" id="Animation_0oeus"]
 resource_name = "Blink"
@@ -731,61 +410,8 @@ _data = {
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
-collision_mask = 7
+collision_mask = 3
 script = SubResource("GDScript_847hh")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="Crosshair" type="TextureRect" parent="CanvasLayer"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -16.0
-offset_top = -16.0001
-offset_right = 16.0
-offset_bottom = 16.0001
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_f1pg7")
-expand_mode = 1
-
-[node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer"]
-texture_filter = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -1.0
-offset_right = -1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch = true
-
-[node name="SubViewport" type="SubViewport" parent="CanvasLayer/SubViewportContainer"]
-transparent_bg = true
-handle_input_locally = false
-audio_listener_enable_3d = true
-positional_shadow_atlas_size = 4096
-size = Vector2i(1920, 1080)
-render_target_update_mode = 4
-
-[node name="GunCamera" type="Camera3D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185817, 0)
-cull_mask = 4
-
-[node name="VHSOutline" type="ColorRect" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
-visible = false
-material = SubResource("ShaderMaterial_yr7rn")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PixelOutline" type="MeshInstance3D" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
-layers = 4
-mesh = SubResource("QuadMesh_wcv41")
 
 [node name="Bean" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_u5jka")
@@ -823,14 +449,6 @@ libraries = {
 "": SubResource("AnimationLibrary_g1yiu")
 }
 
-[node name="mp5" parent="Head/Camera3D" instance=ExtResource("3_wewjs")]
-transform = Transform3D(0.99863, 0.00118737, 0.0523225, 0, 0.999743, -0.0226873, -0.052336, 0.0226563, 0.998372, 0.22, -0.15, -0.883)
-
-[node name="Reload" type="AudioStreamPlayer3D" parent="Head/Camera3D/mp5"]
-transform = Transform3D(1, 1.74623e-09, 7.45058e-09, -1.86265e-09, 1, 3.72529e-09, 0, 1.86265e-09, 1, -0.0165462, -0.163672, 0.319518)
-
-[node name="Dryfire" type="AudioStreamPlayer3D" parent="Head/Camera3D/mp5"]
-
 [node name="BlinkTop" type="MeshInstance3D" parent="Head/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.131218, -0.0655296)
 visible = false
@@ -847,13 +465,13 @@ mesh = SubResource("PlaneMesh_v6y8k")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -124.5
-offset_right = 124.5
+offset_left = -131.5
+offset_right = 131.5
 offset_bottom = 28.0
 grow_horizontal = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/normal_font_size = 15
-text = "Press Q to jump forwards in time."
+text = "Press Q to jump backwards in time."
 
 [node name="TutorialText2" type="RichTextLabel" parent="Head/Camera3D"]
 visible = false
@@ -862,14 +480,15 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -171.0
-offset_top = -31.0
-offset_right = 171.0
+offset_left = -169.0
+offset_top = -40.0
+offset_right = 169.0
+offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 theme_override_font_sizes/normal_font_size = 10
-text = "Switching between the future and the present lets you avoid obstacles."
+text = "Switching between the present and the past lets you avoid obstacles."
 
 [node name="TutorialText3" type="RichTextLabel" parent="Head/Camera3D"]
 visible = false
@@ -878,24 +497,14 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -151.5
+offset_left = -235.0
 offset_top = -18.0
-offset_right = 151.5
+offset_right = 235.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 theme_override_font_sizes/normal_font_size = 10
-text = "You can only stay in the future for 7 seconds so make it count."
-
-[node name="Aimanim" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_1ds0g")
-}
-
-[node name="Dryfire" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_hl81c")
-}
+text = "You can only stay in the past for 3 seconds before you return back to the future so make it count."
 
 [node name="Blinkanim" type="AnimationPlayer" parent="."]
 libraries = {
@@ -911,11 +520,11 @@ ground_pos = NodePath("../GroundPosition")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
 
 [node name="Timeshift" type="Timer" parent="."]
-wait_time = 7.0
+wait_time = 3.0
 one_shot = true
 
 [node name="TimeshiftCD" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 2.0
 one_shot = true
 
 [connection signal="timeout" from="Timeshift" to="." method="_on_timeshift_timeout"]

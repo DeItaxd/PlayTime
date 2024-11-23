@@ -1,6 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://b6daeqq2exr1p"]
+[gd_scene load_steps=13 format=3 uid="uid://b6daeqq2exr1p"]
 
 [ext_resource type="Script" path="res://scenes/world/menu.gd" id="1_h8h7q"]
+[ext_resource type="Texture2D" uid="uid://dy2lkp10qsfcg" path="res://images/timelock.png" id="2_ccuwn"]
+[ext_resource type="Texture2D" uid="uid://ddiiuxyw4bjvv" path="res://images/time.png" id="3_qncy7"]
+[ext_resource type="AudioStream" uid="uid://d0m7e7gc81cex" path="res://audio/Add-Ons.wav" id="4_b75k2"]
+
+[sub_resource type="SystemFont" id="SystemFont_cfdw1"]
+font_names = PackedStringArray("Cambria Math")
 
 [sub_resource type="SystemFont" id="SystemFont_nwxxi"]
 font_names = PackedStringArray("Cambria Math")
@@ -10,33 +16,6 @@ font_names = PackedStringArray("Cambria Math")
 
 [sub_resource type="SystemFont" id="SystemFont_miwir"]
 font_names = PackedStringArray("Cambria Math")
-
-[sub_resource type="Animation" id="Animation_wauxh"]
-resource_name = "fade_in"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Transition/ColorRect:self_modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Transition/ColorRect:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
 
 [sub_resource type="Animation" id="Animation_y5cvm"]
 length = 0.001
@@ -63,6 +42,33 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_wauxh"]
+resource_name = "fade_in"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Transition/ColorRect:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Transition/ColorRect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
 }
 
 [sub_resource type="Animation" id="Animation_sca6t"]
@@ -108,6 +114,20 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_h8h7q")
 
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -186.0
+offset_top = 549.0
+offset_right = 214.0
+offset_bottom = 866.0
+grow_horizontal = 2
+theme_override_fonts/normal_font = SubResource("SystemFont_cfdw1")
+text = "Warning, this game does not feature a save system, and pressing escape takes you back to the main menu immediately. It is meant to be played in one sitting."
+fit_content = true
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
@@ -140,7 +160,7 @@ size_flags_vertical = 8
 focus_neighbor_top = NodePath("../StartButton")
 focus_neighbor_bottom = NodePath("../QuitButton")
 theme_override_fonts/font = SubResource("SystemFont_mm6sw")
-text = "Options"
+text = "Keybinds"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 texture_filter = 1
@@ -163,6 +183,41 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -199.5
+offset_top = 150.0
+offset_right = -0.5
+offset_bottom = 178.0
+grow_horizontal = 2
+scale = Vector2(2, 2)
+mouse_filter = 2
+texture = ExtResource("2_ccuwn")
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+z_index = -6
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -129.0
+offset_top = -23.0
+offset_right = -1049.0
+offset_bottom = -603.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2.2, 2.2)
+mouse_filter = 2
+texture = ExtResource("3_qncy7")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_b75k2")
+autoplay = true
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
