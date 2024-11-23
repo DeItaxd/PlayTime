@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bpjj1b6bkdima"]
+[gd_scene load_steps=4 format=3 uid="uid://bpjj1b6bkdima"]
 
 [ext_resource type="Script" path="res://scripts/options.gd" id="1_rtene"]
+[ext_resource type="Texture2D" uid="uid://cfykdh6magf2d" path="res://images/background.png" id="2_wanxm"]
 
 [sub_resource type="SystemFont" id="SystemFont_t1iyk"]
 
@@ -86,5 +87,12 @@ Q[/right]
 [node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Back"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = -7
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("2_wanxm")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
