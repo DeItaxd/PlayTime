@@ -1,5 +1,6 @@
-[gd_scene load_steps=27 format=3 uid="uid://d0bbllal0am4n"]
+[gd_scene load_steps=30 format=3 uid="uid://d0bbllal0am4n"]
 
+[ext_resource type="Shader" path="res://shaders/outline.gdshader" id="1_66tcc"]
 [ext_resource type="Shader" path="res://shaders/outline_real.gdshader" id="2_uy43f"]
 [ext_resource type="Shader" path="res://shaders/dark_outline.gdshader" id="3_0dms5"]
 [ext_resource type="Texture2D" uid="uid://ck78u4nsdekvb" path="res://images/crosshair.png" id="3_f1pg7"]
@@ -287,7 +288,25 @@ shader_parameter/noiseIntensity = 0.001
 shader_parameter/offsetIntensity = 0.05
 shader_parameter/colorOffsetIntensity = 0.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_oyd2p"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_htih2"]
+render_priority = 0
+shader = ExtResource("1_66tcc")
+shader_parameter/depth_threshold = 0.05
+shader_parameter/normal_threshold = 0.6
+shader_parameter/darken_amount = 0.6
+shader_parameter/lighten_amount = 1.5
+shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
+
+[sub_resource type="QuadMesh" id="QuadMesh_wcv41"]
+material = SubResource("ShaderMaterial_htih2")
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u5jka"]
+radius = 0.22
+height = 0.9
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j00rk"]
 render_priority = 0
 shader = ExtResource("2_uy43f")
 shader_parameter/depth_threshold = 0.05
@@ -296,12 +315,10 @@ shader_parameter/darken_amount = 0.6
 shader_parameter/lighten_amount = 1.5
 shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 
-[sub_resource type="QuadMesh" id="QuadMesh_sdc1f"]
-material = SubResource("ShaderMaterial_oyd2p")
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u5jka"]
-radius = 0.22
-height = 0.9
+[sub_resource type="QuadMesh" id="QuadMesh_6xy0j"]
+material = SubResource("ShaderMaterial_j00rk")
+flip_faces = true
+size = Vector2(2, 2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wc6dd"]
 albedo_color = Color(0, 0, 0, 1)
@@ -657,7 +674,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CanvasLayer/SubViewportContainer/SubViewport/GunCamera"]
-mesh = SubResource("QuadMesh_sdc1f")
+layers = 4
+mesh = SubResource("QuadMesh_wcv41")
 
 [node name="Bean" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_u5jka")
@@ -677,8 +695,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Head/Camera3D"]
-mesh = SubResource("QuadMesh_sdc1f")
+[node name="PixelOutline" type="MeshInstance3D" parent="Head/Camera3D"]
+mesh = SubResource("QuadMesh_6xy0j")
 
 [node name="mp5" parent="Head/Camera3D" instance=ExtResource("3_wewjs")]
 transform = Transform3D(0.99863, 0.00118737, 0.0523225, 0, 0.999743, -0.0226873, -0.052336, 0.0226563, 0.998372, 0.22, -0.15, -0.883)
